@@ -7,7 +7,17 @@ export const VideoTile = ({ peerId, name }: { peerId: string; name: string }) =>
   const { videoRef } = useVideo({ trackId: activeTrack?.id });
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#191B23' }}>
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#191B23',
+      }}
+    >
       <video playsInline muted autoPlay controls={false} ref={videoRef} style={{ width: '100%', height: 'auto' }} />
       {!activeTrack?.enabled || (activeTrack.source !== 'screen' && activeTrack?.degraded) ? (
         <div

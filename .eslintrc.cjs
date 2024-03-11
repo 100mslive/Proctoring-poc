@@ -14,5 +14,11 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    'prettier/prettier': [
+      "error",
+      {
+        'endOfLine': 'auto' // This is need to handle different end-of-line in windows/mac
+      }
+    ],
   },
 }

@@ -18,8 +18,8 @@ function App() {
     );
   }
   const codes = roomCodes.split(',');
-  const cols = Math.floor(codes.length/2);
-  const rows = Math.floor(codes.length/cols);
+  const cols = Math.floor(codes.length / 2);
+  const rows = Math.floor(codes.length / cols);
   return (
     <div
       style={{
@@ -28,10 +28,12 @@ function App() {
         gridTemplateRows: `repeat(${rows}, 1fr)`,
         placeItems: 'center',
         height: '100%',
-        gap: 8
+        gap: 8,
       }}
     >
-      {codes.map((roomCode, index) => <HMSRoom roomCode={roomCode} userId={`user-${index}`} />)}
+      {codes.map((roomCode, index) => (
+        <HMSRoom roomCode={roomCode} userId={`user-${index}`} />
+      ))}
     </div>
   );
 }
