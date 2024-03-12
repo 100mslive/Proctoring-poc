@@ -18,8 +18,8 @@ function App() {
     );
   }
   const codes = roomCodes.split(',');
-  const cols = Math.floor(codes.length / 2);
-  const rows = Math.floor(codes.length / cols);
+  const cols = Math.ceil(codes.length / 2);
+  const rows = Math.ceil(codes.length / cols);
   return (
     <div
       style={{

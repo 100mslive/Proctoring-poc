@@ -1,9 +1,26 @@
 import { selectScreenShareByPeerID, selectVideoTrackByPeerID, useHMSStore, useVideo } from '@100mslive/react-sdk';
 
+const InsetTile = ({ trackId }: { trackId: string }) => {
+  const { videoRef } = useVideo({ trackId: trackId });
+
+  return (
+    <div style={{ aspectRatio: '16/9', height: 130, position: 'absolute', bottom: 12, right: 12, borderRadius: 8 }}>
+      <video
+        playsInline
+        muted
+        autoPlay
+        controls={false}
+        ref={videoRef}
+        style={{ width: '100%', height: 'auto', borderRadius: 8 }}
+      />
+    </div>
+  );
+};
+
 export const VideoTile = ({ peerId, name }: { peerId: string; name: string }) => {
-  const track = useHMSStore(selectVideoTrackByPeerID(peerId));
+  const videoTrack = useHMSStore(selectVideoTrackByPeerID(peerId));
   const screenTrack = useHMSStore(selectScreenShareByPeerID(peerId));
-  const activeTrack = screenTrack || track;
+  const activeTrack = screenTrack || videoTrack;
   const { videoRef } = useVideo({ trackId: activeTrack?.id });
 
   return (
@@ -19,6 +36,7 @@ export const VideoTile = ({ peerId, name }: { peerId: string; name: string }) =>
       }}
     >
       <video playsInline muted autoPlay controls={false} ref={videoRef} style={{ width: '100%', height: 'auto' }} />
+      {activeTrack && videoTrack && activeTrack.id !== videoTrack.id ? <InsetTile trackId={videoTrack.id} /> : null}
       {!activeTrack?.enabled || (activeTrack.source !== 'screen' && activeTrack?.degraded) ? (
         <div
           style={{
