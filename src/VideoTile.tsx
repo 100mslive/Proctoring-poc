@@ -48,7 +48,21 @@ export const VideoTile = ({ peerId, name }: { peerId: string; name: string }) =>
             alignItems: 'center',
           }}
         >
-          <div style={{ background: '#C19A6B', color: 'white' }}>{name.substring(0, 2)}</div>
+          <div
+            style={{
+              background: '#C19A6B',
+              color: 'white',
+              fontSize: '1.5rem',
+              width: 'min(64px, 25%)',
+              aspectRatio: 1,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {name.substring(0, 2)}
+          </div>
         </div>
       ) : (
         <div
