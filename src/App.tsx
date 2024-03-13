@@ -18,7 +18,7 @@ function App() {
     );
   }
   const codes = roomCodes.split(',');
-  const cols = Math.ceil(codes.length / 2);
+  const cols = Math.ceil(Math.sqrt(codes.length));
   const rows = Math.ceil(codes.length / cols);
   return (
     <div
@@ -32,7 +32,7 @@ function App() {
       }}
     >
       {codes.map((roomCode, index) => (
-        <HMSRoom roomCode={roomCode} userId={`user-${index}`} />
+        <HMSRoom key={roomCode} roomCode={roomCode} userId={`user-${index}`} />
       ))}
     </div>
   );

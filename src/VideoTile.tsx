@@ -1,18 +1,68 @@
-import { selectScreenShareByPeerID, selectVideoTrackByPeerID, useHMSStore, useVideo } from '@100mslive/react-sdk';
+import {
+  HMSVideoTrack,
+  selectScreenShareByPeerID,
+  selectVideoTrackByPeerID,
+  useHMSStore,
+  useVideo,
+} from '@100mslive/react-sdk';
 
-const InsetTile = ({ trackId }: { trackId: string }) => {
-  const { videoRef } = useVideo({ trackId: trackId });
+const Avatar = ({ name }: { name: string }) => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        left: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <div
+        style={{
+          background: '#C19A6B',
+          color: 'white',
+          fontSize: '1.5rem',
+          width: 'min(64px, 25%)',
+          aspectRatio: 1,
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {name.substring(0, 2)}
+      </div>
+    </div>
+  );
+};
+
+const InsetTile = ({ track, name }: { track: HMSVideoTrack; name: string }) => {
+  const { videoRef } = useVideo({ trackId: track.id });
 
   return (
-    <div style={{ aspectRatio: '16/9', height: 130, position: 'absolute', bottom: 12, right: 12, borderRadius: 8 }}>
+    <div
+      style={{
+        aspectRatio: '16/9',
+        height: 'max(25%, 130px)',
+        position: 'absolute',
+        bottom: 12,
+        right: 12,
+        borderRadius: 8,
+        background: '#191B23',
+      }}
+    >
       <video
         playsInline
         muted
         autoPlay
         controls={false}
         ref={videoRef}
-        style={{ width: '100%', height: 'auto', borderRadius: 8 }}
+        style={{ height: '100%', width: 'auto', borderRadius: 8 }}
       />
+      {!track.enabled || track.degraded ? <Avatar name={name}></Avatar> : null}
     </div>
   );
 };
@@ -27,7 +77,6 @@ export const VideoTile = ({ peerId, name }: { peerId: string; name: string }) =>
     <div
       style={{
         width: '100%',
-        height: '100%',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
@@ -36,34 +85,11 @@ export const VideoTile = ({ peerId, name }: { peerId: string; name: string }) =>
       }}
     >
       <video playsInline muted autoPlay controls={false} ref={videoRef} style={{ width: '100%', height: 'auto' }} />
-      {activeTrack && videoTrack && activeTrack.id !== videoTrack.id ? <InsetTile trackId={videoTrack.id} /> : null}
+      {activeTrack && videoTrack && activeTrack.id !== videoTrack.id ? (
+        <InsetTile track={videoTrack} name={name} />
+      ) : null}
       {!activeTrack?.enabled || (activeTrack.source !== 'screen' && activeTrack?.degraded) ? (
-        <div
-          style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <div
-            style={{
-              background: '#C19A6B',
-              color: 'white',
-              fontSize: '1.5rem',
-              width: 'min(64px, 25%)',
-              aspectRatio: 1,
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {name.substring(0, 2)}
-          </div>
-        </div>
+        <Avatar name={name} />
       ) : (
         <div
           style={{
