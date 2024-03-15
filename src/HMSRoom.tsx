@@ -1,35 +1,51 @@
-import { HMSRoomProvider, useHMSActions } from '@100mslive/react-sdk';
-import { useEffect } from 'react';
-import { Peers } from './Peers';
+import { HMSPrebuilt } from '@100mslive/roomkit-react';
 
-const AuthToken = ({ roomCode, userId }: { roomCode: string; userId: string }) => {
-  const actions = useHMSActions();
-
-  useEffect(() => {
-    if (!roomCode) {
-      return;
-    }
-    actions
-      .getAuthTokenByRoomCode({ roomCode, userId }, { endpoint: 'https://auth-nonprod.100ms.live/v2/token' })
-      .then(token => {
-        actions
-          .join({
-            authToken: token,
-            userName: userId,
-            initEndpoint: 'https://qa-in2-ipv6.100ms.live/init',
-          })
-          .catch(console.error);
-      })
-      .catch(() => {});
-  }, [actions, roomCode, userId]);
-  return null;
-};
-
-export const HMSRoom = ({ roomCode, userId }: { roomCode: string; userId: string }) => {
+export const HMSRoom = ({
+  roomCode,
+  userId,
+  hideControls = false,
+}: {
+  roomCode: string;
+  userId: string;
+  hideControls: boolean;
+}) => {
   return (
-    <HMSRoomProvider>
-      <AuthToken roomCode={roomCode} userId={userId}></AuthToken>
-      <Peers />
-    </HMSRoomProvider>
+    <HMSPrebuilt
+      roomCode={roomCode}
+      options={{
+        userId,
+        userName: userId,
+        endpoints: {
+          tokenByRoomCode: 'https://auth-nonprod.100ms.live/v2/token',
+          roomLayout: 'https://api-nonprod.100ms.live/v2/layouts/ui',
+          init: 'https://qa-in2-ipv6.100ms.live/init',
+        },
+      }}
+      screens={
+        hideControls
+          ? {
+              conferencing: {
+                default: {
+                  // @ts-expect-error This is for internal usage
+                  hideSections: ['footer', 'header'],
+                  elements: {
+                    video_tile_layout: {
+                      grid: {
+                        enable_local_tile_inset: false,
+                        hide_participant_name_on_tile: true,
+                        rounded_video_tile: true,
+                        hide_audio_mute_on_tile: true,
+                        video_object_fit: 'contain',
+                        edge_to_edge: true,
+                        hide_metadata_on_tile: true,
+                      },
+                    },
+                  },
+                },
+              },
+            }
+          : undefined
+      }
+    />
   );
 };

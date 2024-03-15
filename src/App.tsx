@@ -23,16 +23,24 @@ function App() {
   return (
     <div
       style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${cols}, 1fr)`,
-        gridTemplateRows: `repeat(${rows}, 1fr)`,
-        placeItems: 'center',
+        display: 'flex',
+        flexFlow: 'row wrap',
         height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
         gap: 8,
+        overflow: 'hidden',
       }}
     >
       {codes.map((roomCode, index) => (
-        <HMSRoom key={roomCode} roomCode={roomCode} userId={`user-${index}`} />
+        <div
+          style={{
+            width: `calc(${Math.floor(100 / cols)}% - ${8 * cols - 1}px`,
+            height: `calc(${Math.floor(100 / rows)}% - ${8 * rows - 1}px`,
+          }}
+        >
+          <HMSRoom key={roomCode} roomCode={roomCode} userId={`user-${index}`} hideControls={codes.length > 1} />
+        </div>
       ))}
     </div>
   );
