@@ -6,9 +6,31 @@ export const HMSRoom = ({
   hideControls = false,
 }: {
   roomCode: string;
-  userId: string;
+  userId?: string;
   hideControls: boolean;
 }) => {
+  const overrideLayout = hideControls
+    ? {
+        conferencing: {
+          default: {
+            hideSections: ['footer', 'header'],
+            elements: {
+              video_tile_layout: {
+                grid: {
+                  enable_local_tile_inset: false,
+                  hide_participant_name_on_tile: false,
+                  rounded_video_tile: true,
+                  hide_audio_mute_on_tile: true,
+                  video_object_fit: 'contain',
+                  edge_to_edge: true,
+                  hide_metadata_on_tile: true,
+                },
+              },
+            },
+          },
+        },
+      }
+    : {};
   return (
     <HMSPrebuilt
       roomCode={roomCode}
@@ -21,31 +43,12 @@ export const HMSRoom = ({
           init: 'https://qa-in2-ipv6.100ms.live/init',
         },
       }}
-      screens={
-        hideControls
-          ? {
-              conferencing: {
-                default: {
-                  // @ts-expect-error This is for internal usage
-                  hideSections: ['footer', 'header'],
-                  elements: {
-                    video_tile_layout: {
-                      grid: {
-                        enable_local_tile_inset: false,
-                        hide_participant_name_on_tile: true,
-                        rounded_video_tile: true,
-                        hide_audio_mute_on_tile: true,
-                        video_object_fit: 'contain',
-                        edge_to_edge: true,
-                        hide_metadata_on_tile: true,
-                      },
-                    },
-                  },
-                },
-              },
-            }
-          : undefined
-      }
+      screens={{
+        preview: {
+          skip_preview_screen: true,
+        },
+        ...overrideLayout,
+      }}
     />
   );
 };

@@ -52,7 +52,7 @@
     gifuct-js "^2.1.2"
     wasm-check "^2.0.2"
 
-"@100mslive/react-icons@0.10.2":
+"@100mslive/react-icons@0.10.2", "@100mslive/react-icons@^0.10.2":
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/@100mslive/react-icons/-/react-icons-0.10.2.tgz#1381cab3bc336d68bfe9cecadec26136aa620130"
   integrity sha512-bna3yk6QZc5tyOYgPjcbASN0fifTF8DqNaE8K4QUKKjsYyWo1GQo4EnTikAATeT2Hl2zKv8+ZxwcKjd/nQVrsA==

@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@100mslive/react-icons": "^0.10.2",
     "@100mslive/roomkit-react": "^0.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

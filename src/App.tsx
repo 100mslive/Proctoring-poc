@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import './App.css';
 import { HMSRoom } from './HMSRoom';
+import { HoverControl } from './HoverControl';
 
 const useSearchParams = (param: string) => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -9,6 +11,8 @@ const useSearchParams = (param: string) => {
 
 function App() {
   const roomCodes = useSearchParams('roomCodes');
+  const [inFocusRoom, setInFocusRoom] = useState('');
+  const [showHoverControls, setShowHoverControls] = useState('');
 
   if (!roomCodes) {
     return (
@@ -30,18 +34,51 @@ function App() {
         alignItems: 'center',
         gap: 8,
         overflow: 'hidden',
+        padding: 24,
       }}
     >
-      {codes.map((roomCode, index) => (
-        <div
-          style={{
-            width: `calc(${Math.floor(100 / cols)}% - ${8 * cols - 1}px`,
-            height: `calc(${Math.floor(100 / rows)}% - ${8 * rows - 1}px`,
-          }}
-        >
-          <HMSRoom key={roomCode} roomCode={roomCode} userId={`user-${index}`} hideControls={codes.length > 1} />
-        </div>
-      ))}
+      {inFocusRoom ? (
+        <>
+          <div style={{ flex: '1 1 0', height: '100%' }}>
+            <HMSRoom key={inFocusRoom} roomCode={inFocusRoom} hideControls={codes.length > 1} />
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              height: '100%',
+              gap: 8,
+              flex: '0 0 240px',
+            }}
+          >
+            {codes
+              .filter(roomCode => roomCode !== inFocusRoom)
+              .map(roomCode => (
+                <div key={roomCode} style={{ width: '100%', aspectRatio: 16 / 9 }}>
+                  <HMSRoom roomCode={roomCode} hideControls={codes.length > 1} />
+                  {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
+                </div>
+              ))}
+          </div>
+        </>
+      ) : (
+        codes.map(roomCode => (
+          <div
+            key={roomCode}
+            style={{
+              width: `calc(${Math.floor(100 / cols)}% - ${8 * (cols - 1)}px`,
+              height: `calc(${Math.floor(100 / rows)}% - ${(8 * (rows - 1)) / 2}px`,
+              position: 'relative',
+            }}
+            onMouseEnter={() => setShowHoverControls(roomCode)}
+            onMouseLeave={() => setShowHoverControls('')}
+          >
+            <HMSRoom roomCode={roomCode} hideControls={codes.length > 1} />
+            {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
+          </div>
+        ))
+      )}
     </div>
   );
 }
