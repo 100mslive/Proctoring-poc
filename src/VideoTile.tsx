@@ -9,18 +9,17 @@ import {
 const Avatar = ({ name }: { name: string }) => {
   return (
     <div
+      className="center"
       style={{
         position: 'absolute',
         width: '100%',
         height: '100%',
         top: 0,
         left: 0,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
       }}
     >
       <div
+        className="center"
         style={{
           background: '#C19A6B',
           color: 'white',
@@ -28,9 +27,6 @@ const Avatar = ({ name }: { name: string }) => {
           width: 'min(64px, 25%)',
           aspectRatio: 1,
           borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
         }}
       >
         {name.substring(0, 2)}
@@ -46,7 +42,8 @@ const InsetTile = ({ track, name }: { track: HMSVideoTrack; name: string }) => {
     <div
       style={{
         aspectRatio: '16/9',
-        height: 'max(25%, 130px)',
+        height: 130,
+        width: 'max-content',
         position: 'absolute',
         bottom: 12,
         right: 12,

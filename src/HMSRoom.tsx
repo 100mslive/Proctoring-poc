@@ -2,7 +2,7 @@ import { HMSRoomProvider, useHMSActions } from '@100mslive/react-sdk';
 import { useEffect } from 'react';
 import { Peers } from './Peers';
 
-const AuthToken = ({ roomCode, userId }: { roomCode: string; userId: string }) => {
+const AuthToken = ({ roomCode }: { roomCode: string }) => {
   const actions = useHMSActions();
 
   useEffect(() => {
@@ -10,25 +10,24 @@ const AuthToken = ({ roomCode, userId }: { roomCode: string; userId: string }) =
       return;
     }
     actions
-      .getAuthTokenByRoomCode({ roomCode, userId }, { endpoint: 'https://auth-nonprod.100ms.live/v2/token' })
+      .getAuthTokenByRoomCode({ roomCode })
       .then(token => {
         actions
           .join({
             authToken: token,
-            userName: userId,
-            initEndpoint: 'https://qa-in2-ipv6.100ms.live/init',
+            userName: `user-${roomCode}`,
           })
           .catch(console.error);
       })
       .catch(() => {});
-  }, [actions, roomCode, userId]);
+  }, [actions, roomCode]);
   return null;
 };
 
-export const HMSRoom = ({ roomCode, userId }: { roomCode: string; userId: string }) => {
+export const HMSRoom = ({ roomCode }: { roomCode: string }) => {
   return (
     <HMSRoomProvider>
-      <AuthToken roomCode={roomCode} userId={userId}></AuthToken>
+      <AuthToken roomCode={roomCode}></AuthToken>
       <Peers />
     </HMSRoomProvider>
   );

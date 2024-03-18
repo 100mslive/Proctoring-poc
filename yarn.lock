@@ -17,6 +17,11 @@
     webrtc-adapter "^8.0.0"
     zustand "3.5.7"
 
+"@100mslive/react-icons@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@100mslive/react-icons/-/react-icons-0.10.2.tgz#1381cab3bc336d68bfe9cecadec26136aa620130"
+  integrity sha512-bna3yk6QZc5tyOYgPjcbASN0fifTF8DqNaE8K4QUKKjsYyWo1GQo4EnTikAATeT2Hl2zKv8+ZxwcKjd/nQVrsA==
+
 "@100mslive/react-sdk@^0.10.1":
   version "0.10.1"
   resolved "https://registry.yarnpkg.com/@100mslive/react-sdk/-/react-sdk-0.10.1.tgz#774d94fe9b534ebfbb12faf1db7d563d4535f190"
