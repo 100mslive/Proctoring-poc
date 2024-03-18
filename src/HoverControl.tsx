@@ -5,14 +5,16 @@ export const HoverControl = ({ onFocusRoom }: { onFocusRoom: () => void }) => {
     <div
       style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
+        top: '50%',
+        left: '50%',
+        width: 80,
+        height: 80,
+        transform: 'translate(-50%, -50%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'rgba(0,0,0, 0.4)',
+        background: 'rgba(currentColor, 0.4)',
+        cursor: 'pointer',
       }}
     >
       <div onClick={onFocusRoom}>

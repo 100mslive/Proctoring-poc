@@ -39,7 +39,7 @@ function App() {
     >
       {inFocusRoom ? (
         <>
-          <div style={{ flex: '1 1 0', height: '100%' }}>
+          <div style={{ flex: '1 1 0', height: '100%', minWidth: 0 }}>
             <HMSRoom key={inFocusRoom} roomCode={inFocusRoom} hideControls={codes.length > 1} />
           </div>
           <div
@@ -55,7 +55,12 @@ function App() {
             {codes
               .filter(roomCode => roomCode !== inFocusRoom)
               .map(roomCode => (
-                <div key={roomCode} style={{ width: '100%', aspectRatio: 16 / 9 }}>
+                <div
+                  key={roomCode}
+                  style={{ width: '100%', aspectRatio: 16 / 9, position: 'relative' }}
+                  onMouseEnter={() => setShowHoverControls(roomCode)}
+                  onMouseLeave={() => setShowHoverControls('')}
+                >
                   <HMSRoom roomCode={roomCode} hideControls={codes.length > 1} />
                   {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
                 </div>
