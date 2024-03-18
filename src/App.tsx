@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { HMSReactiveStore } from '@100mslive/react-sdk';
 import './App.css';
 import { HMSRoom } from './HMSRoom';
 import { HoverControl } from './HoverControls';
@@ -9,27 +10,38 @@ const useSearchParams = (param: string) => {
   return searchParams.get(param);
 };
 
+const storesMap = new Map<string, HMSReactiveStore>();
+
 function App() {
-  const roomCodes = useSearchParams('roomCodes');
+  const roomCodes = useSearchParams('roomCodes')?.split(',') || [];
+  const codes = useRef<string[]>(
+    roomCodes.map(code => {
+      if (!storesMap.has(code)) {
+        const newStore = new HMSReactiveStore();
+        newStore.triggerOnSubscribe();
+        storesMap.set(code, newStore);
+      }
+      return code;
+    }),
+  );
   const [inFocusRoom, setInFocusRoom] = useState('');
   const [showHoverControls, setShowHoverControls] = useState('');
 
-  if (!roomCodes) {
+  if (roomCodes.length === 0) {
     return (
       <div className="center" style={{ width: '100%', height: '100%' }}>
         Please provide &nbsp;<b>comma(,)</b>&nbsp;separated roomCodes in search e.g. ?roomCode=code1,code2
       </div>
     );
   }
-  const codes = roomCodes.split(',');
-  const cols = Math.ceil(Math.sqrt(codes.length));
+  const cols = Math.ceil(Math.sqrt(roomCodes.length));
   return (
     <div
-      className="center"
       style={{
+        display: 'flex',
+        placeContent: 'center',
         flexFlow: 'row wrap',
         height: '100%',
-
         gap: 8,
         overflow: 'hidden',
         padding: 24,
@@ -38,7 +50,7 @@ function App() {
       {inFocusRoom ? (
         <>
           <div className="center" style={{ flex: '1 1 0', height: '100%', minWidth: 0 }}>
-            <HMSRoom key={inFocusRoom} roomCode={inFocusRoom} />
+            <HMSRoom key={inFocusRoom} roomCode={inFocusRoom} store={storesMap.get(inFocusRoom)!} />
           </div>
           <div
             style={{
@@ -50,7 +62,7 @@ function App() {
               flex: '0 0 240px',
             }}
           >
-            {codes
+            {codes.current
               .filter(roomCode => roomCode !== inFocusRoom)
               .map(roomCode => (
                 <div
@@ -59,27 +71,33 @@ function App() {
                   onMouseEnter={() => setShowHoverControls(roomCode)}
                   onMouseLeave={() => setShowHoverControls('')}
                 >
-                  <HMSRoom key={roomCode} roomCode={roomCode} />
+                  <HMSRoom key={roomCode} roomCode={roomCode} store={storesMap.get(roomCode)!} />
                   {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
                 </div>
               ))}
           </div>
         </>
       ) : (
-        codes.map(roomCode => (
-          <div
-            key={roomCode}
-            style={{
-              width: `calc(${Math.floor(100 / cols)}% - ${8 * (cols - 1)}px`,
-              position: 'relative',
-            }}
-            onMouseEnter={() => setShowHoverControls(roomCode)}
-            onMouseLeave={() => setShowHoverControls('')}
-          >
-            <HMSRoom key={roomCode} roomCode={roomCode} />
-            {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
-          </div>
-        ))
+        codes.current.map(roomCode => {
+          if (!storesMap.get(roomCode)) {
+            return null;
+          }
+          return (
+            <div
+              key={roomCode}
+              style={{
+                flex: inFocusRoom === roomCode ? '0 0 0' : `0 0 calc(${100 / cols}% - 4px`,
+                minWidth: 0,
+                position: 'relative',
+              }}
+              onMouseEnter={() => setShowHoverControls(roomCode)}
+              onMouseLeave={() => setShowHoverControls('')}
+            >
+              <HMSRoom key={roomCode} roomCode={roomCode} store={storesMap.get(roomCode)!} />
+              {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
+            </div>
+          );
+        })
       )}
     </div>
   );

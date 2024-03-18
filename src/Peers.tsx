@@ -3,10 +3,6 @@ import { VideoTile } from './VideoTile';
 
 export const Peers = () => {
   const peers = useHMSStore(selectRemotePeers);
-
-  if (peers.length === 0) {
-    return <div>No peers have joined yet</div>;
-  }
   const cols = Math.ceil(Math.sqrt(peers.length));
 
   return (
@@ -14,9 +10,10 @@ export const Peers = () => {
       className="center"
       style={{
         flexFlow: 'row wrap',
+        placeContent: 'center',
         gap: 8,
         width: '100%',
-        height: peers.length > 0 ? undefined : '100%',
+        minHeight: 130,
       }}
     >
       {peers.length === 0
@@ -26,7 +23,7 @@ export const Peers = () => {
               key={peer.id}
               className="center"
               style={{
-                width: `calc(${Math.floor(100 / cols)}% - ${8 * (cols - 1)}px`,
+                width: `calc(${Math.floor(100 / cols)}% - 4px)`,
                 position: 'relative',
               }}
             >

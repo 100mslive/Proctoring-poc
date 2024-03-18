@@ -74,6 +74,7 @@ export const VideoTile = ({ peerId, name }: { peerId: string; name: string }) =>
     <div
       style={{
         width: '100%',
+        aspectRatio: '16/9',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',

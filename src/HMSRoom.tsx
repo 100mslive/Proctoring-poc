@@ -1,5 +1,5 @@
-import { HMSRoomProvider, useHMSActions } from '@100mslive/react-sdk';
 import { useEffect } from 'react';
+import { HMSRoomProvider, useHMSActions, HMSReactiveStore } from '@100mslive/react-sdk';
 import { Peers } from './Peers';
 
 const AuthToken = ({ roomCode }: { roomCode: string }) => {
@@ -24,9 +24,9 @@ const AuthToken = ({ roomCode }: { roomCode: string }) => {
   return null;
 };
 
-export const HMSRoom = ({ roomCode }: { roomCode: string }) => {
+export const HMSRoom = ({ roomCode, store }: { roomCode: string; store: HMSReactiveStore }) => {
   return (
-    <HMSRoomProvider>
+    <HMSRoomProvider actions={store.getActions()} store={store.getStore()} notifications={store.getNotifications()}>
       <AuthToken roomCode={roomCode}></AuthToken>
       <Peers />
     </HMSRoomProvider>
