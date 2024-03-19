@@ -3,6 +3,7 @@ import { VideoTile } from './VideoTile';
 
 export const Peers = () => {
   const peers = useHMSStore(selectRemotePeers);
+  const peersWithTrack = peers.filter(peer => peer.audioTrack || peer.videoTrack || peer.auxiliaryTracks.length > 0);
   const cols = Math.ceil(Math.sqrt(peers.length));
 
   return (
@@ -16,9 +17,9 @@ export const Peers = () => {
         minHeight: 130,
       }}
     >
-      {peers.length === 0
-        ? 'No peers have joined yet'
-        : peers.map(peer => (
+      {peersWithTrack.length === 0
+        ? 'No one with video/audio/screenshare has joined yet'
+        : peersWithTrack.map(peer => (
             <div
               key={peer.id}
               className="center"
