@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { HMSReactiveStore } from '@100mslive/react-sdk';
 import './App.css';
 import { HMSRoom } from './HMSRoom';
-import { HoverControl } from './HoverControl';
+import { HoverControl } from './HoverControls';
 
 const useSearchParams = (param: string) => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -9,25 +10,36 @@ const useSearchParams = (param: string) => {
   return searchParams.get(param);
 };
 
+const storesMap = new Map<string, HMSReactiveStore>();
+
 function App() {
-  const roomCodes = useSearchParams('roomCodes');
+  const roomCodes = useSearchParams('roomCodes')?.split(',') || [];
+  const codes = useRef<string[]>(
+    roomCodes.map(code => {
+      if (!storesMap.has(code)) {
+        const newStore = new HMSReactiveStore();
+        newStore.triggerOnSubscribe();
+        storesMap.set(code, newStore);
+      }
+      return code;
+    }),
+  );
   const [inFocusRoom, setInFocusRoom] = useState('');
   const [showHoverControls, setShowHoverControls] = useState('');
 
-  if (!roomCodes) {
+  if (roomCodes.length === 0) {
     return (
-      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="center" style={{ width: '100%', height: '100%' }}>
         Please provide &nbsp;<b>comma(,)</b>&nbsp;separated roomCodes in search e.g. ?roomCode=code1,code2
       </div>
     );
   }
-  const codes = roomCodes.split(',');
-  const cols = Math.ceil(Math.sqrt(codes.length));
-  const rows = Math.ceil(codes.length / cols);
+  const cols = Math.ceil(Math.sqrt(roomCodes.length));
   return (
     <div
       style={{
         display: 'flex',
+        placeContent: 'center',
         flexFlow: 'row wrap',
         height: '100%',
         justifyContent: 'center',
@@ -39,20 +51,20 @@ function App() {
     >
       {inFocusRoom ? (
         <>
-          <div style={{ flex: '1 1 0', height: '100%', minWidth: 0 }}>
-            <HMSRoom key={inFocusRoom} roomCode={inFocusRoom} hideControls={codes.length > 1} />
+          <div className="center" style={{ flex: '1 1 0', height: '100%', minWidth: 0 }}>
+            <HMSRoom key={inFocusRoom} roomCode={inFocusRoom} store={storesMap.get(inFocusRoom)!} />
           </div>
           <div
             style={{
-              display: 'flex',
               flexDirection: 'column',
+              display: 'flex',
               justifyContent: 'center',
               height: '100%',
               gap: 8,
               flex: '0 0 240px',
             }}
           >
-            {codes
+            {codes.current
               .filter(roomCode => roomCode !== inFocusRoom)
               .map(roomCode => (
                 <div
@@ -61,28 +73,33 @@ function App() {
                   onMouseEnter={() => setShowHoverControls(roomCode)}
                   onMouseLeave={() => setShowHoverControls('')}
                 >
-                  <HMSRoom roomCode={roomCode} hideControls={codes.length > 1} />
+                  <HMSRoom key={roomCode} roomCode={roomCode} store={storesMap.get(roomCode)!} />
                   {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
                 </div>
               ))}
           </div>
         </>
       ) : (
-        codes.map(roomCode => (
-          <div
-            key={roomCode}
-            style={{
-              width: `calc(${Math.floor(100 / cols)}% - ${8 * (cols - 1)}px`,
-              height: `calc(${Math.floor(100 / rows)}% - ${(8 * (rows - 1)) / 2}px`,
-              position: 'relative',
-            }}
-            onMouseEnter={() => setShowHoverControls(roomCode)}
-            onMouseLeave={() => setShowHoverControls('')}
-          >
-            <HMSRoom roomCode={roomCode} hideControls={codes.length > 1} />
-            {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
-          </div>
-        ))
+        codes.current.map(roomCode => {
+          if (!storesMap.get(roomCode)) {
+            return null;
+          }
+          return (
+            <div
+              key={roomCode}
+              style={{
+                flex: inFocusRoom === roomCode ? '0 0 0' : `0 0 calc(${100 / cols}% - 4px`,
+                minWidth: 0,
+                position: 'relative',
+              }}
+              onMouseEnter={() => setShowHoverControls(roomCode)}
+              onMouseLeave={() => setShowHoverControls('')}
+            >
+              <HMSRoom key={roomCode} roomCode={roomCode} store={storesMap.get(roomCode)!} />
+              {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
+            </div>
+          );
+        })
       )}
     </div>
   );
