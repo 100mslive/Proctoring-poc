@@ -1,5 +1,5 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Inter; system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -17,4 +17,49 @@ html,
 body {
   height: 100vh;
   overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  height: 100%;
+  background: #272a31;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#room-container {
+  display: 'flex';
+  place-content: 'center';
+  flex-flow: 'row wrap';
+  height: '100%';
+  justify-content: 'center';
+  align-items: 'center';
+  gap: '8px';
+  overflow: 'hidden';
+  padding: '24px';
+}
+  
+.hover-controls {
+  position: 'absolute';
+  top: '50%';
+  left: '50%';
+  width: 80;
+  height: 80;
+  transform: 'translate(-50%, -50%)';
+  display: 'flex';
+  align-items: 'center';
+  justify-content: 'center';
+  background-color: 'rgba(currentColor, 0.4)';
+  cursor: 'pointer';
 }
