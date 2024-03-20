@@ -6,3 +6,9 @@ export const getRoomCodes = () => {
 export const hasVideoTrack = peer => {
   return peer.videoTrack || peer.auxiliaryTracks.some(track => track.type === 'video');
 };
+
+export const createElementWithClass = (tag, className) => {
+  const newElement = document.createElement(tag);
+  newElement.className = className;
+  return newElement;
+};
