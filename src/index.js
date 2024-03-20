@@ -21,11 +21,12 @@ for (const code of roomCodes) {
   } else {
     reactiveStore = storesMap.get(code);
   }
-  const store = reactiveStore.getStore();
-  await joinRoom(code);
-  store.subscribe(peers => {
-    handlePeerUpdates(peers, code);
-  }, selectRemotePeers);
+  joinRoom(code).then(() => {
+    const store = reactiveStore.getStore();
+    store.subscribe(peers => {
+      handlePeerUpdates(peers, code);
+    }, selectRemotePeers);
+  });
 }
 
 async function joinRoom(roomCode) {

@@ -1,24 +1,19 @@
 module.exports = {
   root: true,
   env: { browser: true, es2020: true },
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:react-hooks/recommended',
-  ],
+  parserOptions: {
+    ecmaVersion: 2022,
+    sourceType: 'module',
+  },
+  extends: ['eslint:recommended'],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
-  parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh', 'prettier'],
+  plugins: ['prettier'],
   rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
     'prettier/prettier': [
-      "error",
+      'error',
       {
-        'endOfLine': 'auto' // This is need to handle different end-of-line in windows/mac
-      }
+        endOfLine: 'auto', // This is need to handle different end-of-line in windows/mac
+      },
     ],
   },
-}
+};
