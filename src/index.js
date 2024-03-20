@@ -141,7 +141,6 @@ function addHoverControls(roomCode, parent) {
       });
     } else {
       inFocusRoom = roomCode;
-      console.log(inFocusRoom);
       renderInFocusMode();
     }
   };
