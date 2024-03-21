@@ -3,15 +3,15 @@ import {
   selectIsPeerAudioEnabled,
   selectIsPeerVideoEnabled,
   selectRemotePeers,
+  selectScreenShareByPeerID,
 } from '@100mslive/hms-video-store';
 import { createElementWithClass, hasVideoTrack } from './utils';
 
 export class RoomAdapter {
   #reactiveStore;
   #roomCode;
-  #renderedPeers = new Set();
+  #renderedTracks = new Set();
   #container;
-  #hoverControls;
   #inFocus = false;
   #onFocusChange;
 
@@ -57,9 +57,26 @@ export class RoomAdapter {
 
   #handlePeerUpdates = peers => {
     const peersContainer = document.getElementById(`${this.#roomCode}-container`);
+
     peers.forEach(async peer => {
-      if (!this.#renderedPeers.has(peer.id) && hasVideoTrack(peer)) {
-        peersContainer?.append(await this.#renderPeer(peer));
+      if (!hasVideoTrack(peer)) {
+        return;
+      }
+      let peerContainer = document.getElementById(`${peer.id}-container`);
+      if (!peerContainer) {
+        peerContainer = createElementWithClass('div', 'peer-container');
+        peerContainer.id = `${peer.id}-container`;
+      }
+      peersContainer.appendChild(peerContainer);
+      if (peer.videoTrack && !this.#renderedTracks.has(peer.videoTrack)) {
+        peerContainer.append(await this.#renderPeer(peer, 'video'));
+      }
+      const screenTrack = this.#reactiveStore.getStore().getState(selectScreenShareByPeerID(peer.id));
+      if (screenTrack && !this.#renderedTracks.has(screenTrack.id)) {
+        peerContainer.append(await this.#renderPeer(peer, 'screen'));
+      } else if (!screenTrack) {
+        const screenTile = peerContainer.querySelector('.peer-tile.screen');
+        screenTile?.remove();
       }
     });
   };
@@ -73,43 +90,50 @@ export class RoomAdapter {
     };
     focus.textContent = this.#inFocus ? 'fullscreen_exit' : 'fullscreen';
     hoverControls.appendChild(focus);
-    this.#hoverControls = hoverControls;
     this.#container.appendChild(hoverControls);
   };
 
-  #renderPeer = async peer => {
+  #renderPeer = async (peer, type) => {
     const hms = this.#reactiveStore;
     const hmsStore = hms.getStore();
     const hmsActions = hms.getActions();
-    const peerTileDiv = createElementWithClass('div', 'peer-tile');
-    const videoElement = createElementWithClass('video', 'peer-video');
+    const peerTileDiv = createElementWithClass('div', `peer-tile ${type}`);
     const peerTileName = createElementWithClass('div', 'peer-name');
-    const peerAudioMuted = createElementWithClass('div', 'peer-audio-muted');
-    const peerVideoMuted = createElementWithClass('div', 'peer-video-muted');
+    const videoElement = createElementWithClass('video', 'peer-video');
     videoElement.autoplay = true;
     videoElement.muted = true;
     videoElement.playsinline = true;
     peerTileName.textContent = peer.name;
     peerTileDiv.append(videoElement);
     peerTileDiv.append(peerTileName);
-    peerTileDiv.append(peerAudioMuted);
-    peerTileDiv.append(peerVideoMuted);
-    peerTileDiv.id = `peer-tile-${peer.id}`;
-    hmsStore.subscribe(enabled => {
-      peerAudioMuted.style.display = enabled ? 'none' : 'flex';
-      peerAudioMuted.innerHTML = `<span class="material-symbols-outlined">
-          ${enabled ? 'mic' : 'mic_off'}
-       </span>`;
-    }, selectIsPeerAudioEnabled(peer.id));
-    hmsStore.subscribe(enabled => {
-      peerVideoMuted.style.display = enabled ? 'none' : 'flex';
-      peerVideoMuted.innerHTML = `<span class="material-symbols-outlined">
-               ${enabled ? 'videocam' : 'videocam_off'}
+
+    if (type === 'video') {
+      const peerAudioMuted = createElementWithClass('div', 'peer-audio-muted');
+      const peerVideoMuted = createElementWithClass('div', 'peer-video-muted');
+      peerTileDiv.append(peerAudioMuted);
+      peerTileDiv.append(peerVideoMuted);
+      hmsStore.subscribe(enabled => {
+        peerAudioMuted.style.display = enabled ? 'none' : 'flex';
+        peerAudioMuted.innerHTML = `<span class="material-symbols-outlined">
+            ${enabled ? 'mic' : 'mic_off'}
+            </span>`;
+      }, selectIsPeerAudioEnabled(peer.id));
+      hmsStore.subscribe(enabled => {
+        peerVideoMuted.style.display = enabled ? 'none' : 'flex';
+        peerVideoMuted.innerHTML = `<span class="material-symbols-outlined">
+            ${enabled ? 'videocam' : 'videocam_off'}
             </span>
-          `;
-    }, selectIsPeerVideoEnabled(peer.id));
-    await hmsActions.attachVideo(peer.videoTrack, videoElement);
-    this.#renderedPeers.add(peer.id);
+            `;
+      }, selectIsPeerVideoEnabled(peer.id));
+      await hmsActions.attachVideo(peer.videoTrack, videoElement);
+      this.#renderedTracks.add(peer.videoTrack);
+      peerTileDiv.id = `peer-tile-${peer.videoTrack}`;
+    } else if (type === 'screen') {
+      const screenTrack = hmsStore.getState(selectScreenShareByPeerID(peer.id));
+      await hmsActions.attachVideo(screenTrack.id, videoElement);
+      this.#renderedTracks.add(screenTrack.id);
+      peerTileDiv.id = `peer-tile-${screenTrack.id}`;
+    }
     return peerTileDiv;
   };
 }
