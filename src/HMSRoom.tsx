@@ -32,23 +32,26 @@ export const HMSRoom = ({
       }
     : {};
   return (
-    <HMSPrebuilt
-      roomCode={roomCode}
-      options={{
-        userId,
-        userName: userId,
-        endpoints: {
-          tokenByRoomCode: 'https://auth-nonprod.100ms.live/v2/token',
-          roomLayout: 'https://api-nonprod.100ms.live/v2/layouts/ui',
-          init: 'https://qa-in2-ipv6.100ms.live/init',
-        },
-      }}
-      screens={{
-        preview: {
-          skip_preview_screen: true,
-        },
-        ...overrideLayout,
-      }}
-    />
+    <div id={`${roomCode}-container`} style={{ width: '100%', height: '100%' }}>
+      <HMSPrebuilt
+        roomCode={roomCode}
+        containerSelector={`#${roomCode}-container`}
+        options={{
+          userId,
+          userName: userId,
+          endpoints: {
+            tokenByRoomCode: 'https://auth-nonprod.100ms.live/v2/token',
+            roomLayout: 'https://api-nonprod.100ms.live/v2/layouts/ui',
+            init: 'https://qa-in2-ipv6.100ms.live/init',
+          },
+        }}
+        screens={{
+          preview: {
+            skip_preview_screen: true,
+          },
+          ...overrideLayout,
+        }}
+      />
+    </div>
   );
 };
