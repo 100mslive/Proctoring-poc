@@ -30,7 +30,7 @@ function App() {
   if (roomCodes.length === 0) {
     return (
       <div className="center" style={{ width: '100%', height: '100%' }}>
-        Please provide &nbsp;<b>comma(,)</b>&nbsp;separated roomCodes in search e.g. ?roomCode=code1,code2
+        Please provide &nbsp;<b>comma(,)</b>&nbsp;separated roomCodes in search e.g. ?roomCodes=code1,code2
       </div>
     );
   }
