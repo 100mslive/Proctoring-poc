@@ -6,7 +6,7 @@ This is a basic poc for proctoring use case.
 
 Get roomCodes from [100ms dashboard](https://dashboard.100ms.live) and append to the demo url in the following format:
 
-?roomCodes=<code1>,<code2>
+`?roomCodes=<code1>,<code2>`
 You can append as many roomCodes as you want. we recommend to limit it to 8.
 
 ## Features:
