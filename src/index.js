@@ -6,6 +6,12 @@ const roomAdapters = new Map();
 let inFocusRoom = '';
 const roomContainer = document.getElementById('room-container');
 const roomCodes = getRoomCodes();
+
+if (roomCodes.length > 0) {
+  const infoElement = document.getElementById('info');
+  infoElement?.remove();
+}
+
 for (const code of roomCodes) {
   let adapter;
   if (!roomAdapters.has(code)) {
