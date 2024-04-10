@@ -33,3 +33,14 @@ body {
 .actions > div {
   cursor: pointer;
 }
+
+.snapshots {
+  height: 240px;
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+}
+
+.snapshots img  {
+  object-fit: contain;
+}

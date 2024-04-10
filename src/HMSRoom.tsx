@@ -2,9 +2,11 @@ import { useEffect } from 'react';
 import { HMSRoomProvider, useHMSActions, HMSReactiveStore } from '@100mslive/react-sdk';
 import { Actions, Peers } from './Peers';
 import { HLSContainer } from './HLSContainer';
+import { useImageCapture } from './useImageCapture';
 
 const AuthToken = ({ roomCode }: { roomCode: string }) => {
   const actions = useHMSActions();
+  useImageCapture();
 
   useEffect(() => {
     if (!roomCode) {
@@ -32,6 +34,7 @@ export const HMSRoom = ({ roomCode, store }: { roomCode: string; store: HMSReact
       <AuthToken roomCode={roomCode}></AuthToken>
       {window.location?.pathname.includes('student') ? <Peers /> : <HLSContainer />}
       <Actions />
+      <div className="snapshots"></div>
     </HMSRoomProvider>
   );
 };
