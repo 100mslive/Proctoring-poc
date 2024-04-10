@@ -1,10 +1,32 @@
-import { selectRemotePeers, useHMSStore } from '@100mslive/react-sdk';
+import { selectIsAllowedToPublish, selectPeers, useAVToggle, useHMSStore, useScreenShare } from '@100mslive/react-sdk';
 import { VideoTile } from './VideoTile';
+import { MicOffIcon, MicOnIcon, ShareScreenIcon, VideoOffIcon, VideoOnIcon } from '@100mslive/react-icons';
+
+export const Actions = () => {
+  const { isLocalAudioEnabled, isLocalVideoEnabled, toggleAudio, toggleVideo } = useAVToggle();
+  const { toggleScreenShare } = useScreenShare();
+  const isAllowedToPublish = useHMSStore(selectIsAllowedToPublish);
+  return (
+    <div className="center actions" style={{ height: 56, gap: 12 }}>
+      {toggleAudio && <div onClick={toggleAudio}>{isLocalAudioEnabled ? <MicOnIcon /> : <MicOffIcon />}</div>}
+      {toggleVideo && <div onClick={toggleVideo}>{isLocalVideoEnabled ? <VideoOnIcon /> : <VideoOffIcon />}</div>}
+      {isAllowedToPublish.screen && (
+        <div
+          onClick={async () => {
+            await toggleScreenShare?.();
+          }}
+        >
+          <ShareScreenIcon />
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const Peers = () => {
-  const peers = useHMSStore(selectRemotePeers);
+  const peers = useHMSStore(selectPeers);
   const peersWithTrack = peers.filter(peer => peer.audioTrack || peer.videoTrack || peer.auxiliaryTracks.length > 0);
-  const cols = Math.ceil(Math.sqrt(peers.length));
+  const cols = Math.ceil(Math.sqrt(peersWithTrack.length));
 
   return (
     <div
@@ -14,6 +36,7 @@ export const Peers = () => {
         placeContent: 'center',
         gap: 8,
         width: '100%',
+        flex: '1 1 0',
         minHeight: 130,
       }}
     >

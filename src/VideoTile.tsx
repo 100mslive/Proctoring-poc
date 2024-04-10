@@ -16,6 +16,7 @@ const Avatar = ({ name }: { name: string }) => {
         height: '100%',
         top: 0,
         left: 0,
+        zIndex: 1,
       }}
     >
       <div

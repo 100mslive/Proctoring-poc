@@ -15,3 +15,21 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.hls-container  {
+  display: flex;
+  flex-flow: row wrap;
+  place-content: center;
+}
+
+.hls-container > div {
+  flex: 0 0 50%;
+}
+
+.actions:empty {
+  display: none;
+}
+
+.actions > div {
+  cursor: pointer;
+}

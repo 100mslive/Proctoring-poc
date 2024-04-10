@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { HMSRoomProvider, useHMSActions, HMSReactiveStore } from '@100mslive/react-sdk';
-import { Peers } from './Peers';
+import { Actions, Peers } from './Peers';
+import { HLSContainer } from './HLSContainer';
 
 const AuthToken = ({ roomCode }: { roomCode: string }) => {
   const actions = useHMSActions();
@@ -10,12 +11,13 @@ const AuthToken = ({ roomCode }: { roomCode: string }) => {
       return;
     }
     actions
-      .getAuthTokenByRoomCode({ roomCode })
+      .getAuthTokenByRoomCode({ roomCode }, { endpoint: 'https://auth-nonprod.100ms.live/v2/token' })
       .then(token => {
         actions
           .join({
             authToken: token,
             userName: `user-${roomCode}`,
+            initEndpoint: 'https://qa-in2-ipv6.100ms.live/init',
           })
           .catch(console.error);
       })
@@ -28,7 +30,8 @@ export const HMSRoom = ({ roomCode, store }: { roomCode: string; store: HMSReact
   return (
     <HMSRoomProvider actions={store.getActions()} store={store.getStore()} notifications={store.getNotifications()}>
       <AuthToken roomCode={roomCode}></AuthToken>
-      <Peers />
+      {window.location?.pathname.includes('student') ? <Peers /> : <HLSContainer />}
+      <Actions />
     </HMSRoomProvider>
   );
 };
