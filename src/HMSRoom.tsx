@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { HMSRoomProvider, useHMSActions, HMSReactiveStore, useHMSStore, selectPermissions } from '@100mslive/react-sdk';
 import { Actions, Peers } from './Peers';
 import { HLSContainer } from './HLSContainer';
@@ -33,8 +33,7 @@ const AuthToken = ({ roomCode }: { roomCode: string }) => {
   return null;
 };
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const FileHandler = () => {
+/* const FileHandler = () => {
   const ref = useRef<HTMLImageElement | null>(null);
   const [file, setFile] = useState<File | undefined>();
 
@@ -64,7 +63,7 @@ const FileHandler = () => {
     </div>
   );
 };
-
+ */
 export const HMSRoom = ({ roomCode, store }: { roomCode: string; store: HMSReactiveStore }) => {
   const isStudent = window.location?.pathname.includes('student');
   return (
