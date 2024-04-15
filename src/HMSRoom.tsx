@@ -14,13 +14,12 @@ const AuthToken = ({ roomCode }: { roomCode: string }) => {
       return;
     }
     actions
-      .getAuthTokenByRoomCode({ roomCode }, { endpoint: 'https://auth-nonprod.100ms.live/v2/token' })
+      .getAuthTokenByRoomCode({ roomCode })
       .then(token => {
         actions
           .join({
             authToken: token,
             userName: `user-${roomCode}`,
-            initEndpoint: 'https://qa-in2-ipv6.100ms.live/init',
           })
           .then(() => {
             if (permissions?.hlsStreaming) {
