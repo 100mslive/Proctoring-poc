@@ -63,7 +63,7 @@ export const useImageCapture = () => {
               });
               const { Labels } = await rekognitionClient.send(command);
               if (Labels?.length) {
-                if (window.confirm(`Alert: ${Labels[0].Name} detexted`)) {
+                if (window.confirm(`Alert: ${Labels[0].Name} detected`)) {
                   window.open(`https://${window.location.pathname?.replace('student', '')}`);
                 }
                 return;
