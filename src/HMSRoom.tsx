@@ -21,6 +21,9 @@ const AuthToken = ({ roomCode }: { roomCode: string }) => {
             userName: `user-${roomCode}`,
             initEndpoint: 'https://qa-in2-ipv6.100ms.live/init',
           })
+          .then(() => {
+            actions.startHLSStreaming();
+          })
           .catch(console.error);
       })
       .catch(() => {});
@@ -60,14 +63,13 @@ const FileHandler = () => {
 };
 
 export const HMSRoom = ({ roomCode, store }: { roomCode: string; store: HMSReactiveStore }) => {
+  const isStudent = window.location?.pathname.includes('student');
   return (
     <HMSRoomProvider actions={store.getActions()} store={store.getStore()} notifications={store.getNotifications()}>
       <AuthToken roomCode={roomCode}></AuthToken>
-      {window.location?.pathname.includes('student') ? <Peers /> : <HLSContainer />}
+      {isStudent ? <Peers /> : <HLSContainer />}
       <Actions />
-      <div className="snapshots">
-        <FileHandler />
-      </div>
+      <div className="snapshots">{isStudent ? <FileHandler /> : null}</div>
     </HMSRoomProvider>
   );
 };

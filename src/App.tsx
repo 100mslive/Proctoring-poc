@@ -1,8 +1,7 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { HMSReactiveStore } from '@100mslive/react-sdk';
 import './App.css';
 import { HMSRoom } from './HMSRoom';
-import { HoverControl } from './HoverControls';
 
 const useSearchParams = (param: string) => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -25,24 +24,25 @@ function App() {
       return code;
     }),
   );
-  const [inFocusRoom, setInFocusRoom] = useState('');
-  const [showHoverControls, setShowHoverControls] = useState('');
+  // const [inFocusRoom, setInFocusRoom] = useState('');
+  // const [showHoverControls, setShowHoverControls] = useState('');
 
-  if (roomCodes.length === 0) {
+  if (codes.current.length === 0) {
     return (
       <div className="center" style={{ width: '100%', height: '100%' }}>
         Please provide &nbsp;<b>comma(,)</b>&nbsp;separated roomCodes in search e.g. ?roomCodes=code1,code2
       </div>
     );
   }
-  const cols = Math.ceil(Math.sqrt(roomCodes.length));
+  const roomCode = codes.current[0];
+  // const cols = Math.ceil(Math.sqrt(roomCodes.length));
   return (
     <div
       style={{
         display: 'flex',
-        placeContent: 'center',
-        flexFlow: 'row wrap',
+        flexDirection: 'column',
         height: '100%',
+        width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
         gap: 8,
@@ -50,12 +50,10 @@ function App() {
         padding: 24,
       }}
     >
-      {inFocusRoom ? (
-        <>
-          <div className="center" style={{ flex: '1 1 0', height: '100%', minWidth: 0 }}>
-            <HMSRoom key={inFocusRoom} roomCode={inFocusRoom} store={storesMap.get(inFocusRoom)!} />
-          </div>
-          <div
+      {/* {inFocusRoom ? ( */}
+      <>
+        <HMSRoom key={roomCode} roomCode={roomCode} store={storesMap.get(roomCode)!} />
+        {/*  <div
             style={{
               flexDirection: 'column',
               display: 'flex',
@@ -71,16 +69,16 @@ function App() {
                 <div
                   key={roomCode}
                   style={{ width: '100%', aspectRatio: 16 / 9, position: 'relative' }}
-                  onMouseEnter={() => setShowHoverControls(roomCode)}
+                  onMouseEnter={() => setShowHoverControls('')}
                   onMouseLeave={() => setShowHoverControls('')}
                 >
                   <HMSRoom key={roomCode} roomCode={roomCode} store={storesMap.get(roomCode)!} />
-                  {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
+                  {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom('')} />}
                 </div>
               ))}
-          </div>
-        </>
-      ) : (
+          </div> */}
+      </>
+      {/*  ) : (
         codes.current.map(roomCode => {
           if (!storesMap.get(roomCode)) {
             return null;
@@ -93,17 +91,16 @@ function App() {
                 minWidth: 0,
                 position: 'relative',
               }}
-              onMouseEnter={() => setShowHoverControls(roomCode)}
+              onMouseEnter={() => setShowHoverControls('')}
               onMouseLeave={() => setShowHoverControls('')}
             >
               <HMSRoom key={roomCode} roomCode={roomCode} store={storesMap.get(roomCode)!} />
-              {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
+              {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom('')} />}
             </div>
           );
         })
-      )}
+      )} */}
     </div>
   );
 }
-
 export default App;

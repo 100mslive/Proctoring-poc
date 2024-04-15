@@ -20,10 +20,12 @@ body {
   display: flex;
   flex-flow: row wrap;
   place-content: center;
+  height: 100%;
+  width: 100%;
 }
 
 .hls-container > div {
-  flex: 0 0 50%;
+  flex: 1 1 0;
 }
 
 .actions:empty {
@@ -35,7 +37,7 @@ body {
 }
 
 .snapshots {
-  height: 240px;
+  height: 200px;
   display: flex;
   overflow-x: auto;
   gap: 8px;
@@ -50,10 +52,10 @@ body {
 }
 
 .file-container {
-  height: 240px;
+  height: 200px;
 }
 
 .file-container img {
-  height: 240px;
+  height: 200px;
   width: auto;  
 }
