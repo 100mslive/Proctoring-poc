@@ -14,7 +14,8 @@ export const useImageCapture = () => {
   const hmsActions = useHMSActions();
   useEffect(() => {
     const id = videoTrackId;
-    if (!id) {
+    const isStudent = window.location?.pathname.includes('student');
+    if (!id || !isStudent) {
       return;
     }
 
