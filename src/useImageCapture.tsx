@@ -74,7 +74,7 @@ export const useImageCapture = () => {
               }
 
               const file = document.getElementById('target-image') as HTMLInputElement;
-              if (file.files?.[0]) {
+              if (file?.files?.[0]) {
                 const targetBuffer = await file.files?.[0].arrayBuffer();
                 const targetArray = new Uint8Array(targetBuffer);
                 const compareCommand = new CompareFacesCommand({
