@@ -68,7 +68,7 @@ export const HMSRoom = ({ roomCode, store }: { roomCode: string; store: HMSReact
     <HMSRoomProvider actions={store.getActions()} store={store.getStore()} notifications={store.getNotifications()}>
       <AuthToken roomCode={roomCode}></AuthToken>
       {isStudent ? <Peers /> : <HLSContainer />}
-      <Actions />
+      {isStudent ? <Actions /> : null}
       <div className="snapshots">{isStudent ? <FileHandler /> : null}</div>
     </HMSRoomProvider>
   );

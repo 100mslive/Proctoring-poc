@@ -18,8 +18,6 @@ body {
 
 .hls-container  {
   display: flex;
-  flex-flow: row wrap;
-  place-content: center;
   height: 100%;
   width: 100%;
 }
