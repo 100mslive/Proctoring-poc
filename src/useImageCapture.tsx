@@ -3,7 +3,11 @@ import { selectLocalVideoTrackID, useHMSActions, useHMSStore } from '@100mslive/
 import { RekognitionClient, DetectLabelsCommand, CompareFacesCommand } from '@aws-sdk/client-rekognition';
 import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-provider-cognito-identity';
-// Set the AWS Region.
+
+function openProctorLink() {
+  const url = window.location.href.replace('student/', '');
+  window.open(url, '_blank');
+}
 
 export const useImageCapture = () => {
   const videoTrackId = useHMSStore(selectLocalVideoTrackID);
@@ -57,14 +61,14 @@ export const useImageCapture = () => {
                 Features: ['GENERAL_LABELS'],
                 Settings: {
                   GeneralLabels: {
-                    LabelInclusionFilters: ['Phone', 'Notebook', 'Calculator'],
+                    LabelInclusionFilters: ['Phone', 'Book', 'Reading'],
                   },
                 },
               });
               const { Labels } = await rekognitionClient.send(command);
               if (Labels?.length) {
                 if (window.confirm(`Alert: ${Labels[0].Name} detected`)) {
-                  window.open(`https://${window.location.pathname?.replace('student', '')}`);
+                  openProctorLink();
                 }
                 return;
               }
@@ -82,14 +86,14 @@ export const useImageCapture = () => {
                 const { FaceMatches, UnmatchedFaces } = await rekognitionClient.send(compareCommand);
                 if (!FaceMatches?.length) {
                   if (window.confirm(`Alert: Face does not match`)) {
-                    window.open(`https://${window.location.pathname?.replace('student', '')}`);
+                    openProctorLink();
                   }
                   return;
                 }
 
                 if (UnmatchedFaces?.length) {
                   if (window.confirm(`Alert: Other faces are visible`)) {
-                    window.open(`https://${window.location.pathname?.replace('student', '')}`);
+                    openProctorLink();
                   }
                 }
               }
