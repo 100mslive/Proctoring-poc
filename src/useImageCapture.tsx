@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { selectLocalVideoTrackID, useHMSActions, useHMSStore } from '@100mslive/react-sdk';
-import { RekognitionClient, DetectLabelsCommand, CompareFacesCommand } from '@aws-sdk/client-rekognition';
+import { RekognitionClient, DetectLabelsCommand, DetectFacesCommand } from '@aws-sdk/client-rekognition';
 import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-provider-cognito-identity';
 
@@ -74,7 +74,18 @@ export const useImageCapture = () => {
                 return;
               }
 
-              const file = document.getElementById('target-image') as HTMLInputElement;
+              const detectFacesCommand = new DetectFacesCommand({
+                Image: { Bytes: array },
+              });
+
+              const { FaceDetails } = await rekognitionClient.send(detectFacesCommand);
+              if (FaceDetails && FaceDetails.length > 1) {
+                if (window.confirm(`Alert: Other Person is present`)) {
+                  openProctorLink();
+                }
+              }
+
+              /* const file = document.getElementById('target-image') as HTMLInputElement;
               if (file?.files?.[0]) {
                 const targetBuffer = await file.files?.[0].arrayBuffer();
                 const targetArray = new Uint8Array(targetBuffer);
@@ -98,6 +109,7 @@ export const useImageCapture = () => {
                   }
                 }
               }
+ */
             });
           }
         };

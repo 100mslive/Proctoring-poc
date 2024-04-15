@@ -33,6 +33,7 @@ const AuthToken = ({ roomCode }: { roomCode: string }) => {
   return null;
 };
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const FileHandler = () => {
   const ref = useRef<HTMLImageElement | null>(null);
   const [file, setFile] = useState<File | undefined>();
@@ -71,7 +72,7 @@ export const HMSRoom = ({ roomCode, store }: { roomCode: string; store: HMSReact
       <AuthToken roomCode={roomCode}></AuthToken>
       {isStudent ? <Peers /> : <HLSContainer />}
       {isStudent ? <Actions /> : null}
-      <div className="snapshots">{isStudent ? <FileHandler /> : null}</div>
+      {/* <div className="snapshots">{isStudent ? <FileHandler /> : null}</div> */}
     </HMSRoomProvider>
   );
 };
