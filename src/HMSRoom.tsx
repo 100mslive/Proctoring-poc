@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { HMSRoomProvider, useHMSActions, HMSReactiveStore } from '@100mslive/react-sdk';
+import { HMSRoomProvider, useHMSActions, HMSReactiveStore, useHMSStore, selectPermissions } from '@100mslive/react-sdk';
 import { Actions, Peers } from './Peers';
 import { HLSContainer } from './HLSContainer';
 import { useImageCapture } from './useImageCapture';
 
 const AuthToken = ({ roomCode }: { roomCode: string }) => {
   const actions = useHMSActions();
+  const permissions = useHMSStore(selectPermissions);
   useImageCapture();
 
   useEffect(() => {
@@ -22,12 +23,14 @@ const AuthToken = ({ roomCode }: { roomCode: string }) => {
             initEndpoint: 'https://qa-in2-ipv6.100ms.live/init',
           })
           .then(() => {
-            actions.startHLSStreaming().catch(console.error);
+            if (permissions?.hlsStreaming) {
+              actions.startHLSStreaming().catch(console.error);
+            }
           })
           .catch(console.error);
       })
       .catch(() => {});
-  }, [actions, roomCode]);
+  }, [actions, roomCode, permissions]);
   return null;
 };
 
