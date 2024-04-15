@@ -64,7 +64,7 @@ export const useImageCapture = () => {
               const { Labels } = await rekognitionClient.send(command);
               if (Labels?.length) {
                 if (window.confirm(`Alert: ${Labels[0].Name} detexted`)) {
-                  window.open(window.location.pathname?.replace('student', ''));
+                  window.open(`https://${window.location.pathname?.replace('student', '')}`);
                 }
                 return;
               }
@@ -82,14 +82,14 @@ export const useImageCapture = () => {
                 const { FaceMatches, UnmatchedFaces } = await rekognitionClient.send(compareCommand);
                 if (!FaceMatches?.length) {
                   if (window.confirm(`Alert: Face does not match`)) {
-                    window.open(window.location.pathname?.replace('student', ''));
+                    window.open(`https://${window.location.pathname?.replace('student', '')}`);
                   }
                   return;
                 }
 
                 if (UnmatchedFaces?.length) {
                   if (window.confirm(`Alert: Other faces are visible`)) {
-                    window.open(window.location.pathname?.replace('student', ''));
+                    window.open(`https://${window.location.pathname?.replace('student', '')}`);
                   }
                 }
               }
