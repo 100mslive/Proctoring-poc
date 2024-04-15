@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { HMSRoomProvider, useHMSActions, HMSReactiveStore } from '@100mslive/react-sdk';
 import { Actions, Peers } from './Peers';
 import { HLSContainer } from './HLSContainer';
@@ -28,13 +28,46 @@ const AuthToken = ({ roomCode }: { roomCode: string }) => {
   return null;
 };
 
+const FileHandler = () => {
+  const ref = useRef<HTMLImageElement | null>(null);
+  const [file, setFile] = useState<File | undefined>();
+
+  useEffect(() => {
+    const image = ref.current;
+    if (!image) {
+      return;
+    }
+    if (file) {
+      image.src = URL.createObjectURL(file);
+    } else {
+      image.src = '';
+    }
+  }, [file]);
+
+  return (
+    <div className="file-container center">
+      <input
+        type="file"
+        accept="image/*"
+        id="target-image"
+        onChange={e => {
+          setFile(e.target.files?.[0]);
+        }}
+      />
+      <img ref={ref}></img>
+    </div>
+  );
+};
+
 export const HMSRoom = ({ roomCode, store }: { roomCode: string; store: HMSReactiveStore }) => {
   return (
     <HMSRoomProvider actions={store.getActions()} store={store.getStore()} notifications={store.getNotifications()}>
       <AuthToken roomCode={roomCode}></AuthToken>
       {window.location?.pathname.includes('student') ? <Peers /> : <HLSContainer />}
       <Actions />
-      <div className="snapshots"></div>
+      <div className="snapshots">
+        <FileHandler />
+      </div>
     </HMSRoomProvider>
   );
 };

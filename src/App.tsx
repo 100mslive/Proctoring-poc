@@ -19,6 +19,7 @@ function App() {
       if (!storesMap.has(code)) {
         const newStore = new HMSReactiveStore();
         newStore.triggerOnSubscribe();
+        newStore.getActions().ignoreMessageTypes(['alert']);
         storesMap.set(code, newStore);
       }
       return code;

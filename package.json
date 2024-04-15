@@ -13,6 +13,9 @@
   "dependencies": {
     "@100mslive/react-icons": "^0.10.2",
     "@100mslive/react-sdk": "^0.10.2",
+    "@aws-sdk/client-cognito-identity": "^3.554.0",
+    "@aws-sdk/client-rekognition": "^3.554.0",
+    "@aws-sdk/credential-provider-cognito-identity": "^3.554.0",
     "hls.js": "^1.5.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

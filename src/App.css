@@ -44,3 +44,16 @@ body {
 .snapshots img  {
   object-fit: contain;
 }
+
+.snapshots:empty {
+  display: none;
+}
+
+.file-container {
+  height: 240px;
+}
+
+.file-container img {
+  height: 240px;
+  width: auto;  
+}
