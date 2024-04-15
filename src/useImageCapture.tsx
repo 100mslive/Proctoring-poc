@@ -5,7 +5,8 @@ import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-provider-cognito-identity';
 
 function openProctorLink() {
-  const url = window.location.href.replace('student/', '');
+  const searchParams = new URLSearchParams(window.location.search);
+  const url = window.location.href.split('student/')[0] + '?roomCodes=' + searchParams.get('proctor');
   window.open(url, '_blank');
 }
 
