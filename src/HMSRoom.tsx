@@ -22,7 +22,7 @@ const AuthToken = ({ roomCode }: { roomCode: string }) => {
             initEndpoint: 'https://qa-in2-ipv6.100ms.live/init',
           })
           .then(() => {
-            actions.startHLSStreaming();
+            actions.startHLSStreaming().catch(console.error);
           })
           .catch(console.error);
       })
