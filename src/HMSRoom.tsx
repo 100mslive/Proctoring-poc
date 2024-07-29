@@ -16,6 +16,10 @@ const AuthToken = ({ roomCode }: { roomCode: string }) => {
           .join({
             authToken: token,
             userName: `user-${roomCode}`,
+            settings: {
+              isAudioMuted: true,
+              isVideoMuted: true,
+            }
           })
           .catch(console.error);
       })

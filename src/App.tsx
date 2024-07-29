@@ -10,22 +10,22 @@ const useSearchParams = (param: string) => {
   return searchParams.get(param);
 };
 
-const storesMap = new Map<string, HMSReactiveStore>();
+const stores = new Array<HMSReactiveStore>();
 
 function App() {
   const roomCodes = useSearchParams('roomCodes')?.split(',') || [];
   const codes = useRef<string[]>(
-    roomCodes.map(code => {
-      if (!storesMap.has(code)) {
+    roomCodes.map((code, i) => {
+      if (stores.length <= i) {
         const newStore = new HMSReactiveStore();
         newStore.triggerOnSubscribe();
-        storesMap.set(code, newStore);
+        stores.push(newStore);
       }
       return code;
     }),
   );
-  const [inFocusRoom, setInFocusRoom] = useState('');
-  const [showHoverControls, setShowHoverControls] = useState('');
+  const [inFocusRoom, setInFocusRoom] = useState<number>(-1);
+  const [showHoverControls, setShowHoverControls] = useState<number>(-1);
 
   if (roomCodes.length === 0) {
     return (
@@ -49,10 +49,10 @@ function App() {
         padding: 24,
       }}
     >
-      {inFocusRoom ? (
+      {inFocusRoom >= 0 ? (
         <>
           <div className="center" style={{ flex: '1 1 0', height: '100%', minWidth: 0 }}>
-            <HMSRoom key={inFocusRoom} roomCode={inFocusRoom} store={storesMap.get(inFocusRoom)!} />
+            <HMSRoom key={inFocusRoom} roomCode={codes.current[inFocusRoom]} store={stores[inFocusRoom]} />
           </div>
           <div
             style={{
@@ -65,38 +65,39 @@ function App() {
             }}
           >
             {codes.current
-              .filter(roomCode => roomCode !== inFocusRoom)
-              .map(roomCode => (
+              .map((_, idx) => idx)
+              .filter(idx => idx !== inFocusRoom)
+              .map(idx => (
                 <div
-                  key={roomCode}
+                  key={codes.current[idx]}
                   style={{ width: '100%', aspectRatio: 16 / 9, position: 'relative' }}
-                  onMouseEnter={() => setShowHoverControls(roomCode)}
-                  onMouseLeave={() => setShowHoverControls('')}
+                  onMouseEnter={() => setShowHoverControls(idx)}
+                  onMouseLeave={() => setShowHoverControls(-1)}
                 >
-                  <HMSRoom key={roomCode} roomCode={roomCode} store={storesMap.get(roomCode)!} />
-                  {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
+                  <HMSRoom key={idx} roomCode={codes.current[idx]} store={stores[idx]} />
+                  {showHoverControls === idx && <HoverControl onFocusRoom={() => setInFocusRoom(idx)} />}
                 </div>
               ))}
           </div>
         </>
       ) : (
-        codes.current.map(roomCode => {
-          if (!storesMap.get(roomCode)) {
+        codes.current.map((roomCode, idx) => {
+          if (stores.length <= idx ) {
             return null;
           }
           return (
             <div
               key={roomCode}
               style={{
-                flex: inFocusRoom === roomCode ? '0 0 0' : `0 0 calc(${100 / cols}% - 4px`,
+                flex: inFocusRoom === idx ? '0 0 0' : `0 0 calc(${100 / cols}% - 4px`,
                 minWidth: 0,
                 position: 'relative',
               }}
-              onMouseEnter={() => setShowHoverControls(roomCode)}
-              onMouseLeave={() => setShowHoverControls('')}
+              onMouseEnter={() => setShowHoverControls(idx)}
+              onMouseLeave={() => setShowHoverControls(-1)}
             >
-              <HMSRoom key={roomCode} roomCode={roomCode} store={storesMap.get(roomCode)!} />
-              {showHoverControls === roomCode && <HoverControl onFocusRoom={() => setInFocusRoom(roomCode)} />}
+              <HMSRoom key={roomCode} roomCode={roomCode} store={stores[idx]} />
+              {showHoverControls === idx && <HoverControl onFocusRoom={() => setInFocusRoom(idx)} />}
             </div>
           );
         })

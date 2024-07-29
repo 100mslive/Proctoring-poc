@@ -3,8 +3,8 @@ import { VideoTile } from './VideoTile';
 
 export const Peers = () => {
   const peers = useHMSStore(selectRemotePeers);
-  const peersWithTrack = peers.filter(peer => peer.audioTrack || peer.videoTrack || peer.auxiliaryTracks.length > 0);
-  const cols = Math.ceil(Math.sqrt(peers.length));
+  const peersWithTrack = peers.filter(peer => !peer.name.startsWith('user-') && (peer.audioTrack || peer.videoTrack || peer.auxiliaryTracks.length > 0));
+  const cols = Math.ceil(Math.sqrt(peersWithTrack.length));
 
   return (
     <div
