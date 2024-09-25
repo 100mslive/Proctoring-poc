@@ -1,10 +1,14 @@
+import { VolumeTwoIcon, VolumeZeroIcon } from '@100mslive/react-icons';
 import {
   HMSVideoTrack,
+  selectPeerByID,
   selectScreenShareByPeerID,
   selectVideoTrackByPeerID,
+  useHMSActions,
   useHMSStore,
   useVideo,
 } from '@100mslive/react-sdk';
+import { ROLES } from './constants';
 
 const Avatar = ({ name }: { name: string }) => {
   return (
@@ -69,11 +73,15 @@ export const VideoTile = ({ peerId, name }: { peerId: string; name: string }) =>
   const screenTrack = useHMSStore(selectScreenShareByPeerID(peerId));
   const activeTrack = screenTrack || videoTrack;
   const { videoRef } = useVideo({ trackId: activeTrack?.id });
+  const peerRole = useHMSStore(selectPeerByID(peerId))?.roleName;
+  const isOnStage = peerRole === ROLES.STUDENT_ON_STAGE;
+  const hmsActions = useHMSActions();
 
   return (
     <div
       style={{
-        width: '100%',
+        maxWidth: '100%',
+        height: '100%',
         aspectRatio: '16/9',
         position: 'relative',
         display: 'flex',
@@ -82,6 +90,12 @@ export const VideoTile = ({ peerId, name }: { peerId: string; name: string }) =>
         background: '#191B23',
       }}
     >
+      <div
+        style={{ position: 'absolute', top: 12, right: 12, cursor: 'pointer', zIndex: 100 }}
+        onClick={() => hmsActions.changeRoleOfPeer(peerId, isOnStage ? ROLES.STUDENT : ROLES.STUDENT_ON_STAGE, true)}
+      >
+        {isOnStage ? <VolumeTwoIcon /> : <VolumeZeroIcon />}
+      </div>
       <video playsInline muted autoPlay controls={false} ref={videoRef} style={{ width: '100%', height: 'auto' }} />
       {activeTrack && videoTrack && activeTrack.id !== videoTrack.id ? (
         <InsetTile track={videoTrack} name={name} />
